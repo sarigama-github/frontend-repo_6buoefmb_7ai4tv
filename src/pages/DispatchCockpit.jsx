@@ -1,7 +1,7 @@
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-import { Truck, PhoneCall, TrendingDown, MapPin } from 'lucide-react'
-import { useState } from 'react'
+import { Truck, PhoneCall, MapPin, MessageSquare, ClipboardList, BarChart3, Mail } from 'lucide-react'
+import { useMemo, useState } from 'react'
 
 function KPI({ label, value, sub, good }) {
   return (
@@ -24,6 +24,37 @@ function JobCard({ j, onClick }) {
   )
 }
 
+function Actions({ selected }) {
+  const [status, setStatus] = useState('Confirmat')
+  const [note, setNote] = useState('')
+
+  return (
+    <div className="mt-6 bg-white/5 border border-white/10 rounded-xl p-4">
+      <div className="flex items-center justify-between mb-3">
+        <div className="font-semibold">Detalii cursă – {selected.route}</div>
+        <div className="text-xs text-white/60">Client: {selected.client} • Camion: {selected.truck}</div>
+      </div>
+      <div className="grid md:grid-cols-3 gap-3">
+        <div className="bg-white/10 rounded-lg p-3">
+          <div className="text-xs text-white/60 mb-1">Status</div>
+          <select className="w-full bg-transparent border border-white/20 rounded-lg px-3 py-2 text-sm" value={status} onChange={e=>setStatus(e.target.value)}>
+            {['Confirmat','Încărcat','În tranzit','Livrat'].map(s=>(<option key={s}>{s}</option>))}
+          </select>
+        </div>
+        <div className="bg-white/10 rounded-lg p-3">
+          <div className="text-xs text-white/60 mb-1">Notă client (opțional)</div>
+          <input className="w-full bg-transparent border border-white/20 rounded-lg px-3 py-2 text-sm" placeholder="ex: întârziere 15 min" value={note} onChange={e=>setNote(e.target.value)} />
+        </div>
+        <div className="flex items-end gap-2">
+          <button className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm"><PhoneCall className="w-4 h-4"/> Trimite SMS</button>
+          <button className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-lg text-sm"><Mail className="w-4 h-4"/> Trimite email</button>
+        </div>
+      </div>
+      <div className="text-xs text-white/60 mt-2">Simulare: clienții primesc link de urmărire și ETA.</div>
+    </div>
+  )
+}
+
 function DispatchCockpit() {
   const [selected, setSelected] = useState(null)
   const board = {
@@ -32,6 +63,14 @@ function DispatchCockpit() {
     running:[{route:'B → Târgoviște', cargo:'Marfă generală', client:'Client Z', start:'07:30', eta:'09:00', truck:'TRK-02'}],
     done:[{route:'L → B', cargo:'Morcovi 22 t', client:'Depozit X', start:'06:00', eta:'08:30', truck:'TRK-05'}],
   }
+
+  const kpis = useMemo(() => ({
+    calls: 3,
+    callsDelta: -40,
+    emptyKm: 40,
+    jobs: 7,
+    activeTrucks: '5 / 5'
+  }), [])
 
   return (
     <div className="bg-slate-950 min-h-screen text-white">
@@ -47,10 +86,10 @@ function DispatchCockpit() {
           <div>
             <h2 className="font-semibold mb-3">Today at a glance</h2>
             <div className="grid grid-cols-2 gap-3 mb-4">
-              <KPI label="Curse de azi" value="7" />
-              <KPI label="Camioane active" value="5 / 5" />
-              <KPI label="Apeluri status" value="3" sub="↓ 40% vs. luna trecută" good />
-              <KPI label="Km pe gol estimați azi" value="40 km" />
+              <KPI label="Curse de azi" value={kpis.jobs} />
+              <KPI label="Camioane active" value={kpis.activeTrucks} />
+              <KPI label="Apeluri status" value={kpis.calls} sub={`↓ ${Math.abs(kpis.callsDelta)}% vs. luna trecută`} good={kpis.callsDelta < 0} />
+              <KPI label="Km pe gol estimați azi" value={`${kpis.emptyKm} km`} />
             </div>
             <div className="text-xs text-white/60">Obiectiv: reducere apeluri status cu 50% în 90 de zile</div>
 
@@ -88,19 +127,7 @@ function DispatchCockpit() {
               ))}
             </div>
 
-            {selected && (
-              <div className="mt-6 bg-white/5 border border-white/10 rounded-xl p-4">
-                <div className="flex items-center justify-between mb-3">
-                  <div className="font-semibold">Detalii cursă – {selected.route}</div>
-                  <button onClick={()=>setSelected(null)} className="text-white/60">Închide</button>
-                </div>
-                <div className="text-sm text-white/80 space-y-2">
-                  <div>Client: {selected.client} • Camion: {selected.truck}</div>
-                  <div>Timeline: Confirmat → Încărcat → În tranzit → Livrat</div>
-                  <button className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-lg text-sm"><PhoneCall className="w-4 h-4"/> Trimite update client (DEMO)</button>
-                </div>
-              </div>
-            )}
+            {selected && <Actions selected={selected} />}
           </div>
         </div>
       </div>

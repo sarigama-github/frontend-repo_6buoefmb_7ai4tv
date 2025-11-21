@@ -1,13 +1,28 @@
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-import { CheckCircle2, FileText, Phone, ArrowRight, BadgeCheck, MapPin, Truck, BarChart3 } from 'lucide-react'
+import { CheckCircle2, FileText, Phone, ArrowRight, BadgeCheck, MapPin, Truck, BarChart3, ShieldCheck, Timer, Trophy } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-function Stat({ label, value }) {
+function Stat({ label, value, sub }) {
   return (
     <div className="bg-white/5 border border-white/10 rounded-xl p-4 text-center">
       <div className="text-2xl font-bold text-white">{value}</div>
       <div className="text-white/70 text-sm">{label}</div>
+      {sub && <div className="text-emerald-300/90 text-xs mt-1">{sub}</div>}
+    </div>
+  )
+}
+
+function ValueCard({ icon:Icon, title, points, accent="emerald" }) {
+  const tone = accent === 'orange' ? 'text-orange-300' : 'text-emerald-300'
+  return (
+    <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+      <div className={`inline-flex items-center gap-2 text-sm ${tone} mb-2`}><Icon className="w-4 h-4"/> {title}</div>
+      <ul className="space-y-2 text-white/80 text-sm">
+        {points.map((p,i)=> (
+          <li key={i} className="flex items-start gap-2"><CheckCircle2 className={`w-4 h-4 mt-0.5 ${tone}`} /> <span>{p}</span></li>
+        ))}
+      </ul>
     </div>
   )
 }
@@ -29,7 +44,7 @@ function Landing() {
               Camionul tău la timp, fără 10 telefoane în plus.
             </h1>
             <p className="text-white/80 text-lg mb-6">
-              ASO Warehouse & Logistic mută marfă agricolă și generală din Lungulețu spre București și restul țării. Cu formular de comandă online, notificări și portal clienți, știi mereu unde e marfa ta.
+              Formular online, notificări automate și portal clienți. Mai puțin timp pierdut, mai multă marfă livrată.
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <Link to="/cerere-camion" className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-full font-semibold transition-transform hover:-translate-y-0.5">
@@ -37,6 +52,9 @@ function Landing() {
               </Link>
               <Link to="/portal-client" className="inline-flex items-center gap-2 text-white/90 hover:text-white px-4 py-2 rounded-full font-semibold">
                 Vezi demo portal clienți
+              </Link>
+              <Link to="/agroute-simulator" className="inline-flex items-center gap-2 text-orange-300 hover:text-orange-200 px-4 py-2 rounded-full font-semibold">
+                Calculează ROI <BarChart3 className="w-4 h-4"/>
               </Link>
             </div>
           </div>
@@ -86,16 +104,29 @@ function Landing() {
             </div>
 
             <div className="grid grid-cols-3 gap-3 mt-4">
-              <Stat label="livrări la timp" value="98%" />
-              <Stat label="RON marfă în 2024" value="3,4 mil." />
-              <Stat label="camioane la dispoziție" value="8" />
+              <Stat label="livrări la timp" value="98%" sub="SLA respectat" />
+              <Stat label="RON marfă în 2024" value="3,4 mil." sub="creștere YoY" />
+              <Stat label="camioane la dispoziție" value="8" sub="acoperire 100%" />
             </div>
           </div>
         </div>
       </section>
 
-      {/* How it works */}
+      {/* Outcomes section */}
       <section className="py-16 bg-slate-900 border-t border-white/10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">Ce câștigi în 90 de zile</h2>
+          <div className="grid md:grid-cols-4 gap-4">
+            <ValueCard icon={Phone} title="-40% apeluri status" points={["Notificări automate pentru clienți","Portal cu ETA în timp real","Mai puține întreruperi la birou"]} />
+            <ValueCard icon={Truck} title="+1 cursă/zi flotă" points={["Planificare mai strânsă","Încărcări fără blocaje","Retururi monetizate"]} />
+            <ValueCard icon={Timer} title="2h/zi salvate" points={["Formular online clar","Documente la un loc","Programări standardizate"]} />
+            <ValueCard icon={Trophy} title="Oferta mai competitivă" points={["Răspuns în <60 min","SLA livrare + transparență","Raportare clară pentru B2B"]} accent="orange" />
+          </div>
+        </div>
+      </section>
+
+      {/* How it works */}
+      <section className="py-16 bg-slate-950">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">Cum funcționează</h2>
           <div className="grid md:grid-cols-3 gap-6">
@@ -124,36 +155,39 @@ function Landing() {
         </div>
       </section>
 
-      {/* For whom */}
-      <section className="py-16 bg-slate-950">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">Pentru cine</h2>
-          <div className="grid md:grid-cols-3 gap-6">
-            {[{title:'Fermieri / producători', bullets:['Program clar de încărcare','Comunicare simplă','Fără nervi la descărcare']},{title:'Depozite & traderi', bullets:['Status în portal','Documente la un loc','Programări ușoare']},{title:'Fabrici & B2B', bullets:['Predictibilitate','Raportare','Integrare ușoară']}].map((item, idx) => (
-              <div key={idx} className="bg-white/5 border border-white/10 rounded-xl p-6">
-                <h3 className="text-white font-semibold mb-3">{item.title}</h3>
-                <ul className="space-y-2 text-white/70 text-sm">
-                  {item.bullets.map((b, i) => (
-                    <li key={i} className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-400" /> {b}</li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Why ASO */}
+      {/* Social proof + comparison */}
       <section className="py-16 bg-slate-900 border-t border-white/10">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-10 items-center">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid md:grid-cols-2 gap-10 items-start">
           <div>
             <h2 className="text-2xl md:text-3xl font-bold text-white mb-4">De ce ASO</h2>
-            <p className="text-white/70">Flotă proprie, experiență în marfă agricolă și generală, timpi buni la încărcare/descărcare, comunicare curată. Nu promitem rocket science, promitem livrare.</p>
+            <p className="text-white/70 mb-4">Flotă proprie, experiență în marfă agricolă și generală, timpi buni la încărcare/descărcare, comunicare curată. Nu promitem rocket science, promitem livrare.</p>
+            <div className="grid sm:grid-cols-2 gap-4">
+              {["Top Afaceri micro-întreprinderi Lungulețu (2024–2025)","Flotă proprie – camioane pentru marfă agricolă + generală","Experiență: mii de tone din Lungulețu către București","Programări la depozite, documente la un loc"].map((b, i) => (
+                <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-4 text-white/80 text-sm">{b}</div>
+              ))}
+            </div>
           </div>
-          <div className="grid sm:grid-cols-2 gap-4">
-            {['Top Afaceri micro-întreprinderi Lungulețu (2024–2025)','Flotă proprie – camioane pentru marfă agricolă + generală','Experiență: mii de tone din Lungulețu către București','Programări la depozite, documente la un loc'].map((b, i) => (
-              <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-4 text-white/80 text-sm">{b}</div>
-            ))}
+          <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
+            <div className="text-white/90 font-semibold mb-3">Comparativ – cum arată o zi de lucru</div>
+            <div className="grid grid-cols-2 text-sm text-white/70">
+              <div>
+                <div className="text-white/60 mb-2">Fără ASO</div>
+                <ul className="space-y-2 list-disc list-inside">
+                  <li>6–8 apeluri pentru status</li>
+                  <li>Documente răspândite în email</li>
+                  <li>ETA estimat "după experiență"</li>
+                </ul>
+              </div>
+              <div>
+                <div className="text-white/60 mb-2">Cu ASO</div>
+                <ul className="space-y-2 list-disc list-inside">
+                  <li>0–2 apeluri (notificări automate)</li>
+                  <li>CMR și facturi la un click</li>
+                  <li>ETA în portal + SMS</li>
+                </ul>
+              </div>
+            </div>
+            <div className="mt-4 text-xs text-white/60">Impact tipic: -40% apeluri, +1 cursă/zi flotă (prin reducerea timpilor morți).</div>
           </div>
         </div>
       </section>
@@ -188,8 +222,17 @@ function Landing() {
         </div>
       </section>
 
+      {/* Testimonial */}
+      <section className="py-14 bg-slate-900 border-t border-white/10">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+          <ShieldCheck className="w-10 h-10 text-emerald-400 mx-auto mb-3"/>
+          <blockquote className="text-white/80 text-lg">“După ce am trecut clienții mari pe portal, telefoanele cu ‘unde e camionul?’ aproape au dispărut. Am câștigat timp la birou și am reușit să mai prindem câte un retur.”</blockquote>
+          <div className="text-white mt-3 font-semibold">Manager Depozit – București</div>
+        </div>
+      </section>
+
       {/* FAQ */}
-      <section className="py-16 bg-slate-900 border-t border-white/10">
+      <section className="py-16 bg-slate-900/60 border-t border-white/10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-2xl md:text-3xl font-bold text-white mb-8">Întrebări frecvente</h2>
           <div className="grid md:grid-cols-2 gap-6 text-white/80 text-sm">

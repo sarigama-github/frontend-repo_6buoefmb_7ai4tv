@@ -1,7 +1,7 @@
 import Header from '../components/Header'
 import Footer from '../components/Footer'
-import { useState } from 'react'
-import { Info } from 'lucide-react'
+import { useMemo, useState } from 'react'
+import { Info, PiggyBank, Timer, ShieldCheck } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
 function Success() {
@@ -15,6 +15,56 @@ function Success() {
           <Link to="/portal-client" className="px-5 py-2 rounded-full bg-emerald-500 text-white font-semibold">Vezi portalul clienților</Link>
         </div>
       </div>
+    </div>
+  )
+}
+
+function EstimatorCard({ form }) {
+  const km = useMemo(() => {
+    const src = (form.localitateIncarcare || '').toLowerCase()
+    const dst = (form.localitateDescarcare || '').toLowerCase()
+    if (!dst) return 0
+    if (dst.includes('bucure')) return 55
+    if (dst.includes('pite')) return 130
+    if (dst.includes('targov')) return 70
+    if (dst.includes('giurg')) return 90
+    return 150 // estimare generică
+  }, [form.localitateDescarcare, form.localitateIncarcare])
+
+  const ton = Number(form.tonaj || 0)
+  const basePerKm = 6.5 // RON / km (indicativ)
+  const loadFactor = form.tipMarfa === 'Marfă generală' ? 1 : 0.95
+  const serviceAdd = (form.extra.ajutor ? 120 : 0) + (form.extra.programare ? 80 : 0)
+
+  const estimate = useMemo(() => {
+    if (!ton || !km) return 0
+    return Math.round((basePerKm * km * loadFactor) + serviceAdd)
+  }, [km, ton, loadFactor, serviceAdd])
+
+  const timeSaved = useMemo(() => {
+    // prin formular + notificări, tipic evităm 3–4 apeluri (~6 min/apel)
+    return 20 // minute
+  }, [])
+
+  return (
+    <div className="bg-white/5 border border-white/10 rounded-xl p-5 sticky top-20">
+      <div className="text-white font-semibold mb-2">Estimare rapidă (DEMO)</div>
+      <div className="text-white/70 text-sm mb-3">Bazat pe rută tipică Lungulețu → destinație, servicii selectate și tip marfă.</div>
+      <div className="bg-white/10 rounded-lg p-3 mb-3">
+        <div className="text-sm text-white/70">Distanță estimată</div>
+        <div className="text-white text-lg font-bold">{km ? `${km} km` : '—'}</div>
+      </div>
+      <div className="bg-white/10 rounded-lg p-3 mb-3">
+        <div className="text-sm text-white/70">Preț estimat cursă</div>
+        <div className="text-white text-2xl font-bold">{estimate ? `${estimate.toLocaleString('ro-RO')} RON` : '—'}</div>
+        <div className="text-xs text-white/50">Include servicii extra selectate</div>
+      </div>
+      <div className="grid grid-cols-3 gap-2 mb-4 text-xs">
+        <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-lg p-2 text-emerald-200 flex items-center gap-2"><PiggyBank className="w-4 h-4"/> ROI</div>
+        <div className="bg-blue-500/10 border border-blue-500/30 rounded-lg p-2 text-blue-200 flex items-center gap-2"><Timer className="w-4 h-4"/> -{timeSaved} min</div>
+        <div className="bg-orange-500/10 border border-orange-500/30 rounded-lg p-2 text-orange-200 flex items-center gap-2"><ShieldCheck className="w-4 h-4"/> SLA</div>
+      </div>
+      <div className="text-white/60 text-xs">Estimarea este orientativă. Confirmarea de preț vine după analiza încărcării și programărilor.</div>
     </div>
   )
 }
@@ -64,7 +114,7 @@ function CerereCamion() {
   return (
     <div className="bg-slate-950 min-h-screen text-white">
       <Header />
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 grid md:grid-cols-[1fr_320px] gap-6">
         <div className="bg-white text-slate-900 rounded-xl shadow-xl p-6 md:p-8">
           <h1 className="text-2xl md:text-3xl font-bold mb-2">Cere camion pentru marfa ta</h1>
           <p className="text-gray-600 mb-6">Completează detaliile de mai jos și te contactăm pentru confirmare și preț.</p>
@@ -170,6 +220,7 @@ function CerereCamion() {
             </div>
           </form>
         </div>
+        <div className="hidden md:block"><EstimatorCard form={form} /></div>
       </div>
       <Footer />
     </div>
