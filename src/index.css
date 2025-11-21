@@ -5,6 +5,7 @@
 @layer base {
   :root {
     --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-heading: 'Poppins', 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
     --font-geist: 'Geist', system-ui, sans-serif;
     --font-geist-mono: 'Geist Mono', monospace;
     --font-mona: 'Mona Sans', system-ui, sans-serif;
@@ -18,29 +19,40 @@
   }
 
   body {
-    @apply antialiased;
+    @apply antialiased bg-slate-950;
+  }
+
+  h1, h2, h3, .heading {
+    font-family: var(--font-heading);
+    letter-spacing: -0.02em;
   }
 }
 
-/* Custom utility classes for shadcn/ui patterns */
-@layer utilities {
-  .animate-in {
-    animation-name: animateIn;
-    animation-duration: 350ms;
-    --tw-enter-opacity: initial;
-    --tw-enter-scale: initial;
-    --tw-enter-rotate: initial;
-    --tw-enter-translate-x: initial;
-    --tw-enter-translate-y: initial;
+/* Polished UI primitives */
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-full font-semibold shadow-md shadow-emerald-500/20 transition-all hover:-translate-y-0.5 hover:shadow-lg;
   }
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-5 py-2.5 rounded-full font-semibold transition-all hover:-translate-y-0.5;
+  }
+  .btn-accent {
+    @apply inline-flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-full font-semibold shadow-md shadow-orange-500/20 transition-all hover:-translate-y-0.5 hover:shadow-lg;
+  }
+  .card {
+    @apply bg-white/5 border border-white/10 rounded-2xl;
+  }
+  .subtle-glow {
+    box-shadow: 0 0 0 1px rgba(255,255,255,0.06), 0 10px 30px rgba(16,185,129,0.07);
+  }
+}
 
-  .animate-out {
-    animation-name: animateOut;
-    animation-duration: 350ms;
-    --tw-exit-opacity: initial;
-    --tw-exit-scale: initial;
-    --tw-exit-rotate: initial;
-    --tw-exit-translate-x: initial;
-    --tw-exit-translate-y: initial;
-  }
+/* Decorative gradients */
+.bg-grid {
+  background-image: linear-gradient(to right, rgba(255,255,255,0.04) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.04) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.hero-gradient {
+  background: radial-gradient(circle at 20% 20%, rgba(16,185,129,0.18), transparent 42%), radial-gradient(circle at 85% 10%, rgba(249,115,22,0.14), transparent 45%);
 }

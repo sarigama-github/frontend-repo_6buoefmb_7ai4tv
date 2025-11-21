@@ -14,7 +14,7 @@ function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
         <Link to="/" className="flex items-center gap-3">
           <img src="/flame-icon.svg" alt="ASO" className="w-8 h-8" />
-          <span className="text-white font-semibold tracking-tight">ASO Warehouse & Logistic</span>
+          <span className="text-white font-semibold tracking-tight heading">ASO Logistic</span>
         </Link>
 
         <nav className="hidden md:flex items-center gap-1">
@@ -26,11 +26,11 @@ function Header() {
         </nav>
 
         <div className="hidden md:flex items-center gap-2">
-          <a href="https://wa.me/40000000000" target="_blank" className="inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-600 text-white px-4 py-2 rounded-full text-sm font-semibold transition-transform hover:-translate-y-0.5">
+          <a href="https://wa.me/40000000000" target="_blank" className="btn-primary">
             <MessageCircle className="w-4 h-4" />
             WhatsApp
           </a>
-          <a href="tel:+40000000000" className="inline-flex items-center gap-2 bg-white/10 hover:bg-white/20 text-white px-4 py-2 rounded-full text-sm font-semibold">
+          <a href="tel:+40000000000" className="btn-ghost">
             <Phone className="w-4 h-4" />
             Sună acum
           </a>
@@ -48,6 +48,10 @@ function Header() {
             <NavLink to="/portal-client" onClick={() => setOpen(false)} className="block px-3 py-2 rounded-lg text-white/90 hover:bg-white/10">Portal clienți</NavLink>
             <NavLink to="/dispatch-cockpit" onClick={() => setOpen(false)} className="block px-3 py-2 rounded-lg text-white/90 hover:bg-white/10">Dispatch Cockpit</NavLink>
             <NavLink to="/agroute-simulator" onClick={() => setOpen(false)} className="block px-3 py-2 rounded-lg text-white/90 hover:bg-white/10">Simulator profit</NavLink>
+            <div className="pt-2 flex gap-2">
+              <a href="https://wa.me/40000000000" target="_blank" className="flex-1 btn-primary justify-center">WhatsApp</a>
+              <a href="tel:+40000000000" className="flex-1 btn-ghost justify-center">Sună</a>
+            </div>
           </nav>
         </div>
       )}
